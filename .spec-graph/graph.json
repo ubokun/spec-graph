@@ -116,14 +116,14 @@
       "groups": [
         "viewer:graph"
       ],
-      "state": "current"
+      "state": "past"
     },
     "spec:interaction:v1": {
       "text": "ローカルのグラフ画面でズーム・移動・再配置・検索・Intent状態フィルターと選択詳細を利用できる。Node位置は保存せず、狭いキャンバスは縦配置する。",
       "groups": [
         "viewer:graph"
       ],
-      "state": "current"
+      "state": "past"
     },
     "spec:github:v1": {
       "text": "ローカルで認証したghを使い、指定リポジトリのdefault branchからグラフと関連Issue・PRの状態を取得する。ETagで更新を確認し、グラフと取得用メタデータ・状態のみ保存する。",
@@ -137,6 +137,27 @@
       "groups": [
         "viewer:graph",
         "integration:github"
+      ],
+      "state": "past"
+    },
+    "spec:viewer:v2": {
+      "text": "macOSデスクトップアプリの主画面はグループ・仕様一覧・Intentと履歴の3列で表示する。グラフ表示を前提とせず、現在・予想と計画・過去をタブで読む。従来のブラウザグラフは補助的なCLI表示として残す。",
+      "groups": [
+        "desktop:browser"
+      ],
+      "state": "current"
+    },
+    "spec:interaction:v2": {
+      "text": "デスクトップでspec-groupによる絞り込み、IDと本文の検索、仕様選択、生成元と後続のIntent、関連仕様への移動を提供する。編集と適用はCLIで行う。",
+      "groups": [
+        "desktop:browser"
+      ],
+      "state": "current"
+    },
+    "spec:local-view:v2": {
+      "text": "Pythonを同梱したmacOSアプリとして起動し、ネイティブファイル選択でローカルJSONを読む。GitHubリポジトリはローカルghの認証で読み取る。描画に外部CDNやブラウザ起動を必要としない。",
+      "groups": [
+        "desktop:browser"
       ],
       "state": "current"
     }
@@ -152,24 +173,6 @@
       "text": "リポジトリ非依存のintent-groupを共有レジストリから取得し、版と定義の一致を検証できる。",
       "groups": [
         "core:model"
-      ]
-    },
-    "spec:viewer:v2": {
-      "text": "macOSデスクトップアプリの主画面はグループ・仕様一覧・Intentと履歴の3列で表示する。グラフ表示を前提とせず、現在・予想と計画・過去をタブで読む。従来のブラウザグラフは補助的なCLI表示として残す。",
-      "groups": [
-        "desktop:browser"
-      ]
-    },
-    "spec:interaction:v2": {
-      "text": "デスクトップでspec-groupによる絞り込み、IDと本文の検索、仕様選択、生成元と後続のIntent、関連仕様への移動を提供する。編集と適用はCLIで行う。",
-      "groups": [
-        "desktop:browser"
-      ]
-    },
-    "spec:local-view:v2": {
-      "text": "Pythonを同梱したmacOSアプリとして起動し、ネイティブファイル選択でローカルJSONを読む。GitHubリポジトリはローカルghの認証で読み取る。描画に外部CDNやブラウザ起動を必要としない。",
-      "groups": [
-        "desktop:browser"
       ]
     }
   },
@@ -227,7 +230,7 @@
     "intent:desktop-browser": {
       "text": "仕様を確認するためにグラフ構造をたどる負担を減らし、独立したデスクトップアプリで現在の仕様と変更意図を直接読めるようにする。",
       "group": "spec-graph:correctness@1",
-      "state": "planned",
+      "state": "applied",
       "before": [
         "spec:viewer:v1",
         "spec:interaction:v1",
@@ -239,7 +242,7 @@
         "spec:local-view:v2"
       ],
       "issue": 3,
-      "pr": null
+      "pr": 4
     }
   }
 }
