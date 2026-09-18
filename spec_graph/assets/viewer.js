@@ -75,13 +75,13 @@ function render() {
   cy=cytoscape({container:$('graph'),elements,minZoom:.15,maxZoom:3,wheelSensitivity:.22,layout:layoutOptions(),style:[
     {selector:'node',style:{'background-color':'#173c37','border-color':'#64d9bb','border-width':2,width:54,height:54,label:'data(label)',color:'#c3d3e5','font-size':12,'font-family':'system-ui','text-valign':'bottom','text-margin-y':12,'text-wrap':'wrap','text-overflow-wrap':'anywhere','text-max-width':155,'text-background-color':'#0e1521','text-background-opacity':.9,'text-background-padding':3}},
     ...($('graph').clientWidth<650 ? [{selector:'node',style:{'text-halign':'right','text-valign':'center','text-margin-x':15,'text-margin-y':0,'font-size':14}}] : []),
-    {selector:'.past',style:{'background-color':'#1c2838','border-color':'#657990',color:'#93a6be'}},
-    {selector:'.origin',style:{width:30,height:30,'background-color':'#192334','border-color':'#526680'}},
-    {selector:'.proposal',style:{'background-color':'#3b3020','border-color':'#efbd65','border-style':'dashed',color:'#e7c58e'}},
-    {selector:'node.intent',style:{shape:'diamond',width:32,height:32,'background-color':'#2c4067','border-color':'#8cabef','font-size':10,color:'#93ade0'}},
-    {selector:'node.forecast, node.planned',style:{'border-style':'dashed','border-color':'#dbb677','background-color':'#433721',color:'#dbb677'}},
-    {selector:'edge',style:{width:1.7,'line-color':'#55728c','target-arrow-color':'#7596b4','target-arrow-shape':'triangle','arrow-scale':.85,'curve-style':'bezier'}},
-    {selector:'edge.pending',style:{'line-style':'dashed','line-color':'#aa8955','target-arrow-color':'#cfaa6e'}},
+    {selector:'.past',style:{'background-color':'#141d29','border-color':'#39475a',color:'#66778e'}},
+    {selector:'.origin',style:{width:30,height:30,'background-color':'#141d29','border-color':'#39475a',color:'#66778e'}},
+    {selector:'.proposal',style:{'background-color':'#173c37','border-color':'#64d9bb','border-style':'dashed',color:'#c3d3e5'}},
+    {selector:'node.intent',style:{shape:'diamond',width:32,height:32,'background-color':'#182130','border-color':'#435169','font-size':10,color:'#6c7f99'}},
+    {selector:'node.forecast, node.planned',style:{'border-style':'dashed','border-color':'#435169','background-color':'#182130',color:'#6c7f99'}},
+    {selector:'edge',style:{width:1.7,'line-color':'#303e50','target-arrow-color':'#46566d','target-arrow-shape':'triangle','arrow-scale':.85,'curve-style':'bezier'}},
+    {selector:'edge.pending',style:{'line-style':'dashed','line-color':'#303e50','target-arrow-color':'#46566d'}},
     {selector:'.dimmed',style:{opacity:.18}},
     {selector:'node.focused',style:{'border-width':4,'border-color':'#f2f7ff','overlay-color':'#84bfff','overlay-opacity':.12,'overlay-padding':10}}
   ]});
