@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "repository": "example/spec-graph-demo",
+  "spec_groups": {
+    "screen:login": {
+      "description": "ログイン画面"
+    },
+    "api:auth": {
+      "description": "認証API"
+    }
+  },
+  "intent_groups": {
+    "spec-graph:correctness@1": {
+      "description": "Observable behavioral correctness",
+      "measurement": "Run automated acceptance and regression checks; record commands and outcomes.",
+      "evidence": "Provide reproducible commands and results, with links or paths to supporting artifacts.",
+      "issue_sections": [
+        "Intent",
+        "Acceptance criteria",
+        "Measurement"
+      ],
+      "pr_sections": [
+        "Intent",
+        "Changes",
+        "Evidence"
+      ]
+    }
+  },
+  "nodes": {
+    "null": {
+      "text": "",
+      "groups": [],
+      "state": "current"
+    },
+    "spec:login:v1": {
+      "text": "利用者はメールアドレスとパスワードでログインできる。",
+      "groups": [
+        "screen:login",
+        "api:auth"
+      ],
+      "state": "current"
+    }
+  },
+  "proposals": {
+    "spec:login:v2": {
+      "text": "利用者はパスキーでログインでき、パスワード入力を必要としない。",
+      "groups": [
+        "screen:login",
+        "api:auth"
+      ]
+    }
+  },
+  "intents": {
+    "intent:bootstrap": {
+      "text": "利用者が自分のアカウントへアクセスできるようにする。",
+      "group": "spec-graph:correctness@1",
+      "state": "applied",
+      "before": [
+        "null"
+      ],
+      "after": [
+        "spec:login:v1"
+      ],
+      "issue": 1,
+      "pr": 2
+    },
+    "intent:passkey": {
+      "text": "パスワードの記憶と入力の負担を減らす。",
+      "group": "spec-graph:correctness@1",
+      "state": "planned",
+      "before": [
+        "spec:login:v1"
+      ],
+      "after": [
+        "spec:login:v2"
+      ],
+      "issue": null,
+      "pr": null
+    }
+  }
+}

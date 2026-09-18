@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "repository": "example/spec-graph-demo",
+  "spec_groups": {},
+  "intent_groups": {
+    "spec-graph:correctness@1": {
+      "description": "Observable behavioral correctness",
+      "measurement": "Run automated acceptance and regression checks; record commands and outcomes.",
+      "evidence": "Provide reproducible commands and results, with links or paths to supporting artifacts.",
+      "issue_sections": [
+        "Intent",
+        "Acceptance criteria",
+        "Measurement"
+      ],
+      "pr_sections": [
+        "Intent",
+        "Changes",
+        "Evidence"
+      ]
+    }
+  },
+  "nodes": {
+    "null": {
+      "text": "",
+      "groups": [],
+      "state": "current"
+    }
+  },
+  "proposals": {},
+  "intents": {}
+}
