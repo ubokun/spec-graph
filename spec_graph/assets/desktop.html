@@ -1,0 +1,8 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Spec-Graph</title><style>/* DESKTOP_CSS */</style></head><body>
+<header><strong>Spec-Graph <small>SPECIFICATIONS</small></strong><div><button id="open">ファイルを開く</button><button id="github">GitHubから開く</button><button id="refresh">更新</button></div></header>
+<div id="error" role="alert" hidden></div>
+<main><nav><div class="eyebrow">REPOSITORY</div><h2 id="repo">未選択</h2><p id="source">リポジトリのgraph.jsonを開いてください。</p><div class="eyebrow">SPEC GROUPS</div><div id="groups"></div></nav>
+<section class="workspace"><div class="workspace-heading"><div><div class="eyebrow">SPECIFICATION LIBRARY</div><h1 id="heading">現在の仕様</h1></div><span id="count"></span></div><div class="tabs" role="tablist" aria-label="仕様の状態"><button role="tab" aria-selected="true" data-tab="current">現在</button><button role="tab" aria-selected="false" data-tab="future">予想・計画</button><button role="tab" aria-selected="false" data-tab="past">過去</button></div><input id="search" type="search" placeholder="仕様・IDを検索" aria-label="仕様を検索"><div id="list"></div></section>
+<aside><div class="eyebrow">SPEC DETAIL</div><div id="detail"><h2>仕様を選択</h2><p>本文と、その仕様を生んだ意図・後続の変更を確認できます。</p></div></aside></main>
+<dialog id="github-dialog"><form id="github-form"><h2>GitHubリポジトリを開く</h2><p>ローカルのgh認証でdefault branchを読み取ります。</p><label>OWNER/REPO<input id="repository" placeholder="ubokun/spec-graph" required></label><div><button type="button" id="cancel">キャンセル</button><button type="submit">開く</button></div></form></dialog>
+<script>/* DESKTOP_JS */</script></body></html>

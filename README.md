@@ -9,6 +9,17 @@ Spec-Graphは「現在、何が正しい仕様なのか」と「なぜそうな�
 初期実装（Alpha）です。Python 3.11以上、実行時の外部Python依存はありません。
 GitHub連携には認証済みの `gh` CLIが必要です。
 
+## Desktop app
+
+グラフをたどる代わりに、グループ別の仕様一覧から現在・予想・過去を確認できます。
+
+```sh
+python3 -m pip install '.[desktop]'
+spec-graph-desktop --graph .spec-graph/graph.json
+```
+
+[macOSアプリのビルドと操作](docs/desktop.md)
+
 ## Quick start
 
 ```sh

@@ -22,6 +22,9 @@
     },
     "integration:github": {
       "description": "GitHubからの取得"
+    },
+    "desktop:browser": {
+      "description": "デスクトップ仕様ブラウザ"
     }
   },
   "intent_groups": {
@@ -150,6 +153,24 @@
       "groups": [
         "core:model"
       ]
+    },
+    "spec:viewer:v2": {
+      "text": "macOSデスクトップアプリの主画面はグループ・仕様一覧・Intentと履歴の3列で表示する。グラフ表示を前提とせず、現在・予想と計画・過去をタブで読む。従来のブラウザグラフは補助的なCLI表示として残す。",
+      "groups": [
+        "desktop:browser"
+      ]
+    },
+    "spec:interaction:v2": {
+      "text": "デスクトップでspec-groupによる絞り込み、IDと本文の検索、仕様選択、生成元と後続のIntent、関連仕様への移動を提供する。編集と適用はCLIで行う。",
+      "groups": [
+        "desktop:browser"
+      ]
+    },
+    "spec:local-view:v2": {
+      "text": "Pythonを同梱したmacOSアプリとして起動し、ネイティブファイル選択でローカルJSONを読む。GitHubリポジトリはローカルghの認証で読み取る。描画に外部CDNやブラウザ起動を必要としない。",
+      "groups": [
+        "desktop:browser"
+      ]
     }
   },
   "intents": {
@@ -201,6 +222,23 @@
         "spec:group-sharing:v1"
       ],
       "issue": null,
+      "pr": null
+    },
+    "intent:desktop-browser": {
+      "text": "仕様を確認するためにグラフ構造をたどる負担を減らし、独立したデスクトップアプリで現在の仕様と変更意図を直接読めるようにする。",
+      "group": "spec-graph:correctness@1",
+      "state": "planned",
+      "before": [
+        "spec:viewer:v1",
+        "spec:interaction:v1",
+        "spec:local-view:v1"
+      ],
+      "after": [
+        "spec:viewer:v2",
+        "spec:interaction:v2",
+        "spec:local-view:v2"
+      ],
+      "issue": 3,
       "pr": null
     }
   }

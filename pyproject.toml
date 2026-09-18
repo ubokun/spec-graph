@@ -11,8 +11,12 @@ requires-python = ">=3.11"
 license = {file = "LICENSE"}
 classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3"]
 
+[project.optional-dependencies]
+desktop = ["pywebview>=6,<7"]
+
 [project.scripts]
 spec-graph = "spec_graph.cli:main"
+spec-graph-desktop = "spec_graph.desktop:main"
 
 [tool.setuptools]
 packages = ["spec_graph"]
