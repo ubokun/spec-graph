@@ -67,7 +67,7 @@ def main():
     html = html.replace('/* DESKTOP_JS */', assets.joinpath('desktop.js').read_text())
     api = DesktopAPI(args.graph)
     window = webview.create_window('Spec-Graph', html=html, js_api=api, width=1280, height=820,
-                                   min_size=(900, 600), background_color='#10151e', text_select=True)
+                                   min_size=(900, 600), background_color='#10151e', text_select=True, transparent=True, vibrancy=True)
     api._window = window
     webview.start(private_mode=True)
 

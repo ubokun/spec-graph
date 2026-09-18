@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const node=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;};
-let data=null,tab='current',group=null,selected=null,busy=false;
+let data=null,group=null,selected=null,busy=false;
 const labels={current:'現在',past:'過去',future:'予想・計画'};
 async function request(method,...args){
  if(busy)return;busy=true;for(const id of ['open','github','refresh'])$(id).disabled=true;
@@ -11,19 +11,29 @@ async function request(method,...args){
 }
 function render(){
  const g=data?.graph;$('repo').textContent=g?.repository||'未選択';$('source').textContent=g?(data.source?'ローカルファイル':'GitHub · default branch'):'ファイルまたはGitHubリポジトリを開いてください。';
- $('heading').textContent=tab==='current'?'現在の仕様':tab==='past'?'過去の仕様':'予想・計画';
- document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.tab===tab)));
  $('groups').replaceChildren();if(g){for(const [id,label] of [[null,'すべての仕様'],...Object.entries(g.spec_groups).map(([id,v])=>[id,v.description])]){const b=node('button',label);b.setAttribute('aria-pressed',String(group===id));b.onclick=()=>{group=id;selected=null;render();};$('groups').append(b);}}
  const query=$('search').value.toLocaleLowerCase();
- const entries=g?Object.entries(tab==='future'?g.proposals:g.nodes).filter(([id,n])=>id!=='null'&&(tab==='future'||n.state===tab)&&(!group||n.groups.includes(group))&&(`${id} ${n.text}`).toLocaleLowerCase().includes(query)):[];
- $('count').textContent=entries.length+'件';$('list').replaceChildren();
- for(const [id,n] of entries){const b=node('button','',`spec ${tab}`);b.setAttribute('aria-pressed',String(id===selected));b.append(node('span',labels[tab],'badge'),node('span',id,'id'),node('span',n.text,'text'));for(const key of n.groups)b.append(node('span',key,'tag'));b.onclick=()=>{selected=id;render();};$('list').append(b);}
- if(!entries.length)$('list').append(node('p',g?'該当する仕様はありません。':'リポジトリを開くと、現在の仕様をここに表示します。','empty'));
+ let total=0;$('list').replaceChildren();
+ for(const state of ['current','future','past']){
+  const entries=g?Object.entries(state==='future'?g.proposals:g.nodes).filter(([id,n])=>id!=='null'&&(state==='future'||n.state===state)&&(!group||n.groups.includes(group))&&(`${id} ${n.text}`).toLocaleLowerCase().includes(query)):[];
+  total+=entries.length;
+  const section=node('section','',`spec-section ${state}`),heading=node('div','','section-heading');
+  const title=node('h2',labels[state]);title.id='section-'+state;section.setAttribute('aria-labelledby',title.id);
+  heading.append(title,node('span',entries.length+'件','section-count'));
+  const actions=node('div','','rail-actions'),rail=node('div','','card-rail');rail.id='rail-'+state;rail.tabIndex=0;rail.setAttribute('role','region');rail.setAttribute('aria-label',labels[state]+'の仕様カード');
+  for(const [text,direction] of [['←',-1],['→',1]]){const button=node('button',text);button.setAttribute('aria-label',labels[state]+(direction<0?'を左へ':'を右へ'));button.disabled=!entries.length;button.onclick=()=>rail.scrollBy({left:direction*324,behavior:'smooth'});actions.append(button);}
+  heading.append(actions);section.append(heading,rail);
+  for(const [id,n] of entries){const button=node('button','',`spec ${state}`);button.dataset.specId=id;button.setAttribute('aria-pressed',String(id===selected));button.append(node('span',labels[state],'badge'),node('span',id,'id'),node('span',n.text,'text'));for(const key of n.groups)button.append(node('span',key,'tag'));
+   button.onclick=()=>{selected=id;document.querySelectorAll('.spec').forEach(card=>card.setAttribute('aria-pressed',String(card.dataset.specId===id)));detail();};rail.append(button);}
+  if(!entries.length)rail.append(node('p',g?'該当する仕様はありません。':'リポジトリを開いてください。','empty'));
+  $('list').append(section);
+ }
+ $('count').textContent=total+'件';
  detail();
 }
-function go(id){const g=data.graph;if(id==='null')return;tab=g.proposals[id]?'future':g.nodes[id].state;group=null;selected=id;$('search').value='';render();}
+function go(id){const g=data.graph;if(id==='null')return;group=null;selected=id;$('search').value='';render();const card=Array.from(document.querySelectorAll('.spec')).find(e=>e.dataset.specId===id);if(card){card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});card.focus({preventScroll:true});}}
 function detail(){const root=$('detail');root.replaceChildren();const g=data?.graph,n=g&&selected!==null&&(g.nodes[selected]||g.proposals[selected]);if(!n){root.append(node('h2','仕様を選択'),node('p','本文と、その仕様を生んだ意図・後続の変更を確認できます。'));return;}
- root.append(node('h2',labels[tab]+'の仕様'),node('code',selected),node('p',n.text,'body'));
+ root.append(node('h2',labels[g.proposals[selected]?'future':n.state]+'の仕様'),node('code',selected),node('p',n.text,'body'));
  for(const key of n.groups)root.append(node('span',g.spec_groups[key].description,'tag'));
  for(const [heading,predicate] of [['この仕様を生んだ意図',i=>i.after.includes(selected)],['後続の変更・予想',i=>i.before.includes(selected)]]){
  root.append(node('h3',heading));const found=Object.entries(g.intents).filter(([,i])=>predicate(i));if(!found.length)root.append(node('p','まだありません。'));
@@ -35,5 +45,5 @@ function detail(){const root=$('detail');root.replaceChildren();const g=data?.gr
 }
 $('open').onclick=()=>request('open_local');$('refresh').onclick=()=>request('snapshot');$('github').onclick=()=>$('github-dialog').showModal();$('cancel').onclick=()=>$('github-dialog').close();
 $('github-form').onsubmit=event=>{event.preventDefault();$('github-dialog').close();request('open_github',$('repository').value.trim());};
-$('search').oninput=render;document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;selected=null;render();});
+$('search').oninput=()=>{selected=null;render();};
 window.addEventListener('pywebviewready',()=>request('snapshot'));render();
