@@ -1,12 +1,32 @@
-<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Spec-Graph</title>
-<style>
-:root{font-family:system-ui,sans-serif;color:#e6eef6;background:#0a111b}body{margin:0;padding:40px;max-width:1300px;margin:auto}h1{font-size:34px;letter-spacing:-1px}header{display:flex;align-items:center;justify-content:space-between}button,select{background:#172437;color:inherit;border:1px solid #34485d;padding:10px;border-radius:8px}p{line-height:1.6;color:#a9b8c8}.lane{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:24px;margin:24px 0;align-items:center}.card{border:1px solid #34485d;border-radius:12px;padding:18px;margin:10px 0;background:#101d2d;white-space:pre-wrap;overflow-wrap:anywhere}.intent{border-color:#497acd}.current{border-left:4px solid #53dfbd}.past{opacity:.65}.proposal{border:1px dashed #dfbc6d}.badge{font-size:12px;color:#53dfbd;margin-bottom:10px}small{color:#91a5bb}#error{color:#ffadad}.empty{padding:30px;border:1px dashed #34485d}@media(max-width:700px){body{padding:16px}.lane{grid-template-columns:1fr;gap:0}header{display:block}}
-</style>
-<header><div><small>SPECIFICATION × INTENT</small><h1>Spec-Graph</h1><p id="repo"></p></div><div><select id="filter"><option value="all">すべて</option><option value="applied">適用済み</option><option value="planned">計画・予想</option></select> <button id="refresh">更新</button></div></header>
-<p>左：変更前のSpec → 中央：Intent → 右：変更後のSpec。破線は適用前の候補です。</p><p id="error" role="alert"></p><main id="graph"></main>
-<script>
-const el=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e};let data;
-function render(){const g=data.graph;document.querySelector('#repo').textContent=g.repository+' · '+Object.keys(g.nodes).length+' nodes';const root=document.querySelector('#graph');root.replaceChildren();const node=id=>{const n=g.nodes[id]||g.proposals[id];const c=el('div','','card '+(n.state||'proposal'));c.append(el('div',id+' / '+(n.state||'候補'),'badge'),el('div',n.text||'∅ nullnode'),el('small',n.groups.join(' · ')));return c};const filter=document.querySelector('#filter').value;for(const [id,i] of Object.entries(g.intents)){if(filter!=='all'&&filter!==i.state)continue;const row=el('section','','lane'),left=el('div',''),right=el('div','');for(const n of i.before)left.append(node(n));for(const n of i.after)right.append(node(n));const c=el('div','','card intent');const state=i.issue===null?'予想':i.state==='applied'?'適用済み':'計画';c.append(el('div',id+' / '+state,'badge'),el('div',i.text),el('p',i.group));for(const kind of ['issue','pr']){if(i[kind]!==null){const status=data.statuses[kind+':'+i[kind]]||'未取得';c.append(el('div',kind.toUpperCase()+' #'+i[kind]+' · '+status));}}if(i.state==='planned'&&i.before.some(n=>g.nodes[n].state==='past'))c.append(el('p','要更新：変更元のSpecは過去になっています'));row.append(left,c,right);root.append(row)}if(!root.children.length){root.append(el('div','表示対象のIntentはありません。nullnodeから最初のIntentを追加してください。','empty'),node('null'));}}
-async function load(){const b=document.querySelector('#refresh');b.disabled=true;try{const r=await fetch('/api/graph');if(!r.ok)throw new Error(await r.text());data=await r.json();document.querySelector('#error').textContent='';render()}catch(e){document.querySelector('#error').textContent='取得できませんでした: '+e.message}finally{b.disabled=false}}
-document.querySelector('#refresh').onclick=load;document.querySelector('#filter').onchange=()=>{if(data)render()};load();
-</script></html>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spec-Graph · Explorer</title>
+<link rel="stylesheet" href="/assets/viewer.css">
+<script defer src="/assets/cytoscape.min.js"></script>
+<script defer src="/assets/cytoscape-dagre.min.js"></script>
+<script defer src="/assets/graph-model.js"></script>
+<script defer src="/assets/viewer.js"></script>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="brand-icon">⋈</span><div><h1>Spec-Graph <span>EXPLORER</span></h1><p id="repo">グラフを読み込み中…</p></div></div>
+  <div class="toolbar"><label for="filter" class="sr-only">Intentの表示対象</label><select id="filter"><option value="all">すべてのIntent</option><option value="applied">適用済み</option><option value="planned">計画・予想</option></select><button id="refresh">↻ 更新</button></div>
+</header>
+<div class="summary"><span id="counts" aria-live="polite"></span><div class="legend"><span><i class="current"></i>現在</span><span><i class="past"></i>過去</span><span><i class="proposal"></i>候補</span><span><i class="diamond"></i>Intent</span><span>┄ 予想・計画</span></div></div>
+<p id="error" role="alert" hidden></p>
+<main>
+  <section class="canvas-area" aria-label="仕様グラフ">
+    <div class="canvas-heading"><strong>仕様のつながり</strong><span>過去 → 現在 → 予想</span></div>
+    <div id="graph" role="img" aria-label="SpecとIntentの有向グラフ。詳細は右側のノード一覧からも選択できます。"></div>
+    <p id="empty" hidden>この条件に一致するIntentはありません。</p>
+    <div class="canvas-bottom"><span>ドラッグで移動 · ホイールでズーム · 点を選択して詳細</span><div class="controls"><button id="zoom-out" aria-label="縮小">−</button><output id="zoom" aria-label="拡大率">100%</output><button id="zoom-in" aria-label="拡大">＋</button><button id="fit">全体表示</button><button id="layout">再配置</button></div></div>
+  </section>
+  <aside aria-label="グラフの詳細">
+    <section id="details" aria-live="polite"></section>
+    <section class="browser"><div class="section-heading">ノードを探す <span id="result-count"></span></div><label for="search" class="sr-only">ID・仕様・意図を検索</label><input id="search" type="search" placeholder="ID・仕様・意図を検索" autocomplete="off"><div id="node-list"></div></section>
+  </aside>
+</main>
+<footer>ローカルで表示 · 仕様データの編集はCLIから <a href="/assets/THIRD_PARTY_LICENSES.txt" target="_blank" rel="noopener">Cytoscape.js / Dagre licenses</a></footer>
+</body></html>

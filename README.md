@@ -35,7 +35,7 @@ spec-graph init --repo OWNER/REPO
 | Spec-Graph | JSON形式、nullnode、自然言語Spec、グループ、予想と適用、CLI |
 | Spec-Graph-CI | 構造・履歴差分・Issue/PR書式と対応関係の検証 |
 | Spec-Graph-Atomizer | 初期化時に導入されるIntent駆動開発Skill |
-| Spec-Graph-Visualizer | ローカルWeb UI、予想と履歴、Issue/PR状態、ghによる読み取り |
+| Spec-Graph-Visualizer | 点・矢印のグラフ、自動配置、ズーム・移動・検索、予想と履歴、Issue/PR状態 |
 
 ## Change a specification
 
@@ -67,7 +67,10 @@ spec-graph view --repo OWNER/REPO
 
 ブラウザで開く／更新ボタンを押すたびに取得します。リポジトリはcloneせず、
 グラフとリンク先の状態のみを保存します。ソースコード・Issue本文・PR本文は保存しません。
-キャッシュの更新と制限は [設計](docs/design.md) を参照してください。
+丸い点がSpec、菱形がIntentです。点・線を選択すると詳細を表示します。
+ドラッグ・ホイールで移動とズーム、検索からノードに移動できます。
+キャッシュの更新と制限は [設計](docs/design.md)、ライブラリ選定は
+[Visualizer](docs/visualizer.md) を参照してください。
 
 ## Documentation
 

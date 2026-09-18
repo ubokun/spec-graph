@@ -7,3 +7,5 @@ dist/
 .spec-graph/cache/
 Codex.local.md
 .Codex/
+
+node_modules/
