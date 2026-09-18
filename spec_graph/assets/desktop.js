@@ -14,7 +14,7 @@ function render(){
  $('groups').replaceChildren();if(g){for(const [id,label] of [[null,'すべての仕様'],...Object.entries(g.spec_groups).map(([id,v])=>[id,v.description])]){const b=node('button',label);b.setAttribute('aria-pressed',String(group===id));b.onclick=()=>{group=id;selected=null;render();};$('groups').append(b);}}
  const query=$('search').value.toLocaleLowerCase();
  let total=0;$('list').replaceChildren();
- for(const state of ['current','future','past']){
+ for(const state of ['future','current','past']){
   const entries=g?Object.entries(state==='future'?g.proposals:g.nodes).filter(([id,n])=>id!=='null'&&(state==='future'||n.state===state)&&(!group||n.groups.includes(group))&&(`${id} ${n.text}`).toLocaleLowerCase().includes(query)):[];
   total+=entries.length;
   const section=node('section','',`spec-section ${state}`),heading=node('div','','section-heading');
