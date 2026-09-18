@@ -16,6 +16,7 @@ jobs:
       - run: python -m pip install .
       - run: python -m unittest discover -s tests -v
       - run: spec-graph --graph examples/graph.json validate
+      - run: spec-graph validate
 
   viewer:
     runs-on: ubuntu-latest

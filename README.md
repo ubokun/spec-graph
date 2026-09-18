@@ -37,6 +37,19 @@ spec-graph init --repo OWNER/REPO
 | Spec-Graph-Atomizer | 初期化時に導入されるIntent駆動開発Skill |
 | Spec-Graph-Visualizer | 点・矢印のグラフ、自動配置、ズーム・移動・検索、予想と履歴、Issue/PR状態 |
 
+## このリポジトリ自身のグラフ
+
+```sh
+python3 -m spec_graph validate
+python3 -m spec_graph view
+```
+
+`.spec-graph/graph.json` に実装済み仕様12件と将来案2件を登録しています。
+初期取り込みは [Issue #2](https://github.com/ubokun/spec-graph/issues/2) と
+[PR #1](https://github.com/ubokun/spec-graph/pull/1) に対応します。
+PRブランチの現在はそのブランチの仕様です。default branchの正本はマージ時に更新されます。
+将来案は未確定で、実装済み機能や実施予定の約束を意味しません。
+
 ## Change a specification
 
 1. `spec_groups` に画面・API・コンポーネントなどの分類を定義します。
