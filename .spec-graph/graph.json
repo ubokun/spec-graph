@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "repository": "ubokun/spec-graph",
+  "spec_groups": {
+    "core:model": {
+      "description": "仕様・意図のドメインモデル"
+    },
+    "core:history": {
+      "description": "履歴と適用"
+    },
+    "cli:commands": {
+      "description": "CLIコマンド"
+    },
+    "ci:validation": {
+      "description": "グラフ・差分・書式検証"
+    },
+    "skills:atomizer": {
+      "description": "Intent駆動開発支援"
+    },
+    "viewer:graph": {
+      "description": "グラフ画面"
+    },
+    "integration:github": {
+      "description": "GitHubからの取得"
+    }
+  },
+  "intent_groups": {
+    "spec-graph:correctness@1": {
+      "description": "Observable behavioral correctness",
+      "measurement": "Run automated acceptance and regression checks; record commands and outcomes.",
+      "evidence": "Provide reproducible commands and results, with links or paths to supporting artifacts.",
+      "issue_sections": [
+        "Intent",
+        "Acceptance criteria",
+        "Measurement"
+      ],
+      "pr_sections": [
+        "Intent",
+        "Changes",
+        "Evidence"
+      ]
+    }
+  },
+  "nodes": {
+    "null": {
+      "text": "",
+      "groups": [],
+      "state": "current"
+    },
+    "spec:model:v1": {
+      "text": "仕様を自然言語のNode、変更意図を複数の変更元と変更先を結ぶIntentとして保存する。通常Specは一つ以上のリポジトリ内spec-groupに属し、Intentは一つの版付きintent-groupに属する。",
+      "groups": [
+        "core:model"
+      ],
+      "state": "current"
+    },
+    "spec:history:v1": {
+      "text": "nullnodeから仕様を開始し、適用済みNodeの状態を現在と過去で表す。適用済みIntentとNodeの本文・所属は変更せず、新しいIntentで履歴を追加する。",
+      "groups": [
+        "core:model",
+        "core:history"
+      ],
+      "state": "current"
+    },
+    "spec:forecast:v1": {
+      "text": "Issue未対応のIntentを予想として保持し、変更後の仕様は候補として別に保存する。予想は現在のNodeを過去にしない。競合する予想を保存できる。",
+      "groups": [
+        "core:model",
+        "core:history"
+      ],
+      "state": "current"
+    },
+    "spec:apply:v1": {
+      "text": "Issueに対応する計画をCLIで適用すると、変更元の現在Nodeを過去にし、候補を新しい現在Nodeにする。変更元が過去なら適用を拒否する。",
+      "groups": [
+        "core:history",
+        "cli:commands"
+      ],
+      "state": "current"
+    },
+    "spec:validation:v1": {
+      "text": "グラフ検証で参照切れ、重複、循環、到達不能、時間状態の不整合を拒否し、差分検証で履歴の削除や書き換えを拒否する。",
+      "groups": [
+        "ci:validation"
+      ],
+      "state": "current"
+    },
+    "spec:pr-check:v1": {
+      "text": "PRを一つのIntentに対応づけ、intent-groupに定義したIssue・PRの必須見出しと本文の存在を検査する。計測結果の真偽までは判定しない。",
+      "groups": [
+        "ci:validation"
+      ],
+      "state": "current"
+    },
+    "spec:storage:v1": {
+      "text": "専用UTF-8 JSON形式をリポジトリの.spec-graph/graph.jsonに保存し、CLIによる更新時はファイルを一度に置き換える。",
+      "groups": [
+        "core:model",
+        "cli:commands"
+      ],
+      "state": "current"
+    },
+    "spec:atomizer:v1": {
+      "text": "初期化CLIはnullnodeを含むグラフとIntent駆動開発のAtomizer Skillを生成し、既存ファイルを上書きしない。",
+      "groups": [
+        "skills:atomizer",
+        "cli:commands"
+      ],
+      "state": "current"
+    },
+    "spec:viewer:v1": {
+      "text": "Specを円、Intentを菱形の接続点として一つの有向グラフに表示する。現在は緑の実線、未来の候補は緑の破線、過去とIntentと接続線は暗く表示する。",
+      "groups": [
+        "viewer:graph"
+      ],
+      "state": "current"
+    },
+    "spec:interaction:v1": {
+      "text": "ローカルのグラフ画面でズーム・移動・再配置・検索・Intent状態フィルターと選択詳細を利用できる。Node位置は保存せず、狭いキャンバスは縦配置する。",
+      "groups": [
+        "viewer:graph"
+      ],
+      "state": "current"
+    },
+    "spec:github:v1": {
+      "text": "ローカルで認証したghを使い、指定リポジトリのdefault branchからグラフと関連Issue・PRの状態を取得する。ETagで更新を確認し、グラフと取得用メタデータ・状態のみ保存する。",
+      "groups": [
+        "integration:github"
+      ],
+      "state": "current"
+    },
+    "spec:local-view:v1": {
+      "text": "Visualizerは127.0.0.1で動作し、描画ライブラリをPythonパッケージから配信する。ブラウザは外部CDNを必要とせず、NodeやIntentの本文をHTMLとして実行しない。",
+      "groups": [
+        "viewer:graph",
+        "integration:github"
+      ],
+      "state": "current"
+    }
+  },
+  "proposals": {
+    "spec:layout-memory:v1": {
+      "text": "移動したNodeの配置をローカルに保存し、次回表示時に復元できる。",
+      "groups": [
+        "viewer:graph"
+      ]
+    },
+    "spec:group-sharing:v1": {
+      "text": "リポジトリ非依存のintent-groupを共有レジストリから取得し、版と定義の一致を検証できる。",
+      "groups": [
+        "core:model"
+      ]
+    }
+  },
+  "intents": {
+    "intent:adopt-self-graph": {
+      "text": "仕様と実装の対応をこのリポジトリ自身で追跡できるように、グラフUIを含む現ブランチの実装済み仕様を最初のスナップショットとして取り込む。過去の変更履歴は推測して再構成しない。",
+      "group": "spec-graph:correctness@1",
+      "state": "applied",
+      "before": [
+        "null"
+      ],
+      "after": [
+        "spec:model:v1",
+        "spec:history:v1",
+        "spec:forecast:v1",
+        "spec:apply:v1",
+        "spec:validation:v1",
+        "spec:pr-check:v1",
+        "spec:storage:v1",
+        "spec:atomizer:v1",
+        "spec:viewer:v1",
+        "spec:interaction:v1",
+        "spec:github:v1",
+        "spec:local-view:v1"
+      ],
+      "issue": 2,
+      "pr": 1
+    },
+    "intent:layout-memory": {
+      "text": "繰り返し見るグラフで、利用者が整理した配置を維持する。",
+      "group": "spec-graph:correctness@1",
+      "state": "planned",
+      "before": [
+        "spec:interaction:v1"
+      ],
+      "after": [
+        "spec:layout-memory:v1"
+      ],
+      "issue": null,
+      "pr": null
+    },
+    "intent:group-sharing": {
+      "text": "複数リポジトリで評価観点と受け入れ条件を統一する。",
+      "group": "spec-graph:correctness@1",
+      "state": "planned",
+      "before": [
+        "spec:model:v1"
+      ],
+      "after": [
+        "spec:group-sharing:v1"
+      ],
+      "issue": null,
+      "pr": null
+    }
+  }
+}

@@ -14,5 +14,8 @@ classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Pytho
 [project.scripts]
 spec-graph = "spec_graph.cli:main"
 
+[tool.setuptools]
+packages = ["spec_graph"]
+
 [tool.setuptools.package-data]
 spec_graph = ["assets/*", "assets/atomizer/*"]

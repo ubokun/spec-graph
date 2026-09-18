@@ -35,7 +35,20 @@ spec-graph init --repo OWNER/REPO
 | Spec-Graph | JSON形式、nullnode、自然言語Spec、グループ、予想と適用、CLI |
 | Spec-Graph-CI | 構造・履歴差分・Issue/PR書式と対応関係の検証 |
 | Spec-Graph-Atomizer | 初期化時に導入されるIntent駆動開発Skill |
-| Spec-Graph-Visualizer | ローカルWeb UI、予想と履歴、Issue/PR状態、ghによる読み取り |
+| Spec-Graph-Visualizer | 点・矢印のグラフ、自動配置、ズーム・移動・検索、予想と履歴、Issue/PR状態 |
+
+## このリポジトリ自身のグラフ
+
+```sh
+python3 -m spec_graph validate
+python3 -m spec_graph view
+```
+
+`.spec-graph/graph.json` に実装済み仕様12件と将来案2件を登録しています。
+初期取り込みは [Issue #2](https://github.com/ubokun/spec-graph/issues/2) と
+[PR #1](https://github.com/ubokun/spec-graph/pull/1) に対応します。
+PRブランチの現在はそのブランチの仕様です。default branchの正本はマージ時に更新されます。
+将来案は未確定で、実装済み機能や実施予定の約束を意味しません。
 
 ## Change a specification
 
@@ -67,7 +80,10 @@ spec-graph view --repo OWNER/REPO
 
 ブラウザで開く／更新ボタンを押すたびに取得します。リポジトリはcloneせず、
 グラフとリンク先の状態のみを保存します。ソースコード・Issue本文・PR本文は保存しません。
-キャッシュの更新と制限は [設計](docs/design.md) を参照してください。
+丸い点がSpec、菱形がIntentです。点・線を選択すると詳細を表示します。
+ドラッグ・ホイールで移動とズーム、検索からノードに移動できます。
+キャッシュの更新と制限は [設計](docs/design.md)、ライブラリ選定は
+[Visualizer](docs/visualizer.md) を参照してください。
 
 ## Documentation
 

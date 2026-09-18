@@ -1,0 +1,14 @@
+{
+  "name": "spec-graph-viewer",
+  "private": true,
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "test": "node --test tests/viewer.test.cjs"
+  },
+  "devDependencies": {
+    "@dagrejs/dagre": "3.0.0",
+    "@dagrejs/graphlib": "4.0.1",
+    "cytoscape": "3.34.3",
+    "cytoscape-dagre": "4.0.1"
+  }
+}

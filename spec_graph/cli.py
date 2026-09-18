@@ -34,18 +34,33 @@ def serve(args):
     cache = Path(args.cache)
     def snapshot():
         return sync(args.repo, cache) if args.repo else {'graph': validate(read(args.graph)), 'statuses': {}}
+    static_assets = {
+        '/': ('viewer.html', 'text/html; charset=utf-8'),
+        **{f'/assets/{name}': (name, mime) for name, mime in [
+            ('viewer.css', 'text/css; charset=utf-8'),
+            ('viewer.js', 'text/javascript; charset=utf-8'),
+            ('graph-model.js', 'text/javascript; charset=utf-8'),
+            ('cytoscape.min.js', 'text/javascript; charset=utf-8'),
+            ('cytoscape-dagre.min.js', 'text/javascript; charset=utf-8'),
+            ('THIRD_PARTY_LICENSES.txt', 'text/plain; charset=utf-8'),
+        ]},
+    }
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
-            if self.path not in ('/', '/api/graph'):
+            if self.path != '/api/graph' and self.path not in static_assets:
                 self.send_error(404); return
             try:
-                content = (json.dumps(snapshot(), ensure_ascii=False).encode() if self.path == '/api/graph'
-                           else assets.joinpath('viewer.html').read_bytes())
+                if self.path == '/api/graph':
+                    content = json.dumps(snapshot(), ensure_ascii=False).encode()
+                    mime = 'application/json; charset=utf-8'
+                else:
+                    filename, mime = static_assets[self.path]
+                    content = assets.joinpath(filename).read_bytes()
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json; charset=utf-8' if self.path == '/api/graph' else 'text/html; charset=utf-8')
+                self.send_header('Content-Type', mime)
                 self.send_header('Cache-Control', 'no-store')
                 self.send_header('X-Content-Type-Options', 'nosniff')
-                self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'")
+                self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'")
                 self.end_headers(); self.wfile.write(content)
             except (GraphError, OSError, ValueError, KeyError) as exc:
                 self.send_error(502, str(exc))

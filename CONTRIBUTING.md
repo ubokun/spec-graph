@@ -11,3 +11,6 @@ python3 -m spec_graph --graph examples/graph.json validate
 
 コアは標準ライブラリだけで動作します。形式互換性を変える場合はversionの変更と移行方針が必要です。
 PRには変更理由・変更点・検証結果を記載してください。
+
+Visualizerを変更する場合は `npm ci --ignore-scripts` と `npm test` も実行してください。
+ライブラリ更新手順は [Visualizer](docs/visualizer.md) にあります。
